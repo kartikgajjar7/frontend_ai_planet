@@ -4,18 +4,22 @@ import Chatcontainer from "./componets/Chatcontainer";
 import { useState } from "react";
 
 function App() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [history, sethistory] = useState<Message[]>([]);
   const [file, setfile] = useState(null);
   const [fileid, setfileid] = useState(null);
   return (
     <div className="flex flex-col h-screen bg-white">
-      <Header setfile={setfile} setfileid={setfileid} />
-      {(() => {
-        console.log(fileid, " app ke andr fileid");
-        return null;
-      })()}
-      <Chatcontainer fileid={fileid} />
-
-      <main className="flex-1 overflow-y-auto p-4"></main>
+      <Header sethistory={sethistory} setfile={setfile} setfileid={setfileid} />
+      <div className="flex-1 min-h-0">
+        <Chatcontainer
+          messages={messages}
+          setMessages={setMessages}
+          sethistory={sethistory}
+          history={history}
+          fileid={fileid}
+        />
+      </div>
     </div>
   );
 }

@@ -2,13 +2,14 @@ import { Upload } from "lucide-react";
 import { useRef } from "react";
 import axios from "axios";
 import { useState } from "react";
-const Header = ({ setfile, setfileid }) => {
+const Header = ({ setfile, setfileid, sethistory }) => {
   const [filename, setfilename] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    sethistory([]);
     const file = event.target.files?.[0];
     if (file) {
       setfile(file);
