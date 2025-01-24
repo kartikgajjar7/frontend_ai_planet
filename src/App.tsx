@@ -6,7 +6,7 @@ import { useState } from "react";
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [history, sethistory] = useState<Message[]>([]);
-  const [file, setfile] = useState(null);
+  const [file, setfile] = useState("");
   const [fileid, setfileid] = useState(null);
   return (
     <div className="flex flex-col h-screen bg-white">

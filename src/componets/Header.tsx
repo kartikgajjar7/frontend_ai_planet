@@ -1,11 +1,18 @@
 import { Upload } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
-import { useState } from "react";
-const Header = ({ setfile, setfileid, sethistory }) => {
-  const [filename, setfilename] = useState(null);
+
+interface HeaderProps {
+  setfile: React.Dispatch<React.SetStateAction<File | null>>;
+  setfileid: React.Dispatch<React.SetStateAction<string | null>>;
+  sethistory: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const Header = ({ setfile, setfileid, sethistory }: HeaderProps) => {
+  const [filename, setfilename] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -14,19 +21,17 @@ const Header = ({ setfile, setfileid, sethistory }) => {
     if (file) {
       setfile(file);
 
-      // Create FormData object
       const formData = new FormData();
-      formData.append("file", file); // Append the file with 'file' parameter name
+      formData.append("file", file);
 
       try {
-        // Make POST request using axios
         setIsUploading(true);
-        const response = await axios.post(
+        const response = await axios.post<{ id: string }>(
           "http://127.0.0.1:8000/upload",
           formData,
           {
             headers: {
-              "Content-Type": "multipart/form-data", // Let Axios set the correct boundary automatically
+              "Content-Type": "multipart/form-data",
             },
           }
         );
@@ -45,50 +50,50 @@ const Header = ({ setfile, setfileid, sethistory }) => {
   const handleButtonClick = () => {
     fileInputRef.current?.click();
   };
+
   return (
-    <header className="flex justify-between items-center p-4 border-b">
-      {/* Logo */}
-      <div className="flex items-center gap-2">
+    <header className="flex justify-between items-center p-2 md:p-4 border-b">
+      <div className="flex items-center gap-1 md:gap-2">
         <img
           src="/blacklogo.svg"
           alt="Planet Logo"
-          className="w-[104.93px] h-[41px]"
+          className="w-20 h-8 md:w-[104.93px] md:h-[41px]"
         />
       </div>
 
-      {/* Upload Button */}
-      <div className="flex flex-row justify-center items-center">
-        {filename ? (
-          <div className="flex mr-12 flex-row justify-center items-center">
-            <div className="p-2 border flex justify-center items-center border-[#0FA958] rounded-lg">
+      <div className="flex flex-row items-center space-x-2 md:space-x-4">
+        {filename && (
+          <div className="flex items-center">
+            <div className="p-1 md:p-2 border flex justify-center items-center border-[#0FA958] rounded-lg">
               <svg
-                width="13"
-                height="16"
+                width="10"
+                height="12"
                 viewBox="0 0 13 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                className="w-2.5 h-3 md:w-3 md:h-4"
               >
                 <path
                   d="M8.13647 0.771973V4.04511C8.13647 4.26213 8.22269 4.47027 8.37614 4.62373C8.5296 4.77718 8.73774 4.8634 8.95476 4.8634H12.2279"
                   stroke="#0FA958"
-                  stroke-width="1.0158"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.0158"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M10.5914 15.5011H2.40854C1.9745 15.5011 1.55823 15.3287 1.25131 15.0218C0.944396 14.7148 0.771973 14.2986 0.771973 13.8645V2.40854C0.771973 1.9745 0.944396 1.55823 1.25131 1.25131C1.55823 0.944396 1.9745 0.771973 2.40854 0.771973H8.13653L12.228 4.8634V13.8645C12.228 14.2986 12.0555 14.7148 11.7486 15.0218C11.4417 15.3287 11.0254 15.5011 10.5914 15.5011Z"
                   stroke="#0FA958"
-                  stroke-width="1.0158"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.0158"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </div>
 
-            <p className=" ml-2 text-red-400 ">{filename}</p>
+            <p className="ml-1 text-xs md:text-sm text-red-400 truncate max-w-[80px] md:max-w-[150px]">
+              {filename}
+            </p>
           </div>
-        ) : (
-          ""
         )}
 
         <input
@@ -100,17 +105,17 @@ const Header = ({ setfile, setfileid, sethistory }) => {
         />
         <button
           onClick={handleButtonClick}
-          className="flex items-center gap-2 mr-12 px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-1 md:gap-2 px-2 py-1 md:px-4 md:py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
         >
           {isUploading ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
-              <span>Uploading...</span>
+              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-600"></div>
+              <span className="text-xs md:text-sm">Uploading...</span>
             </>
           ) : (
             <>
-              <Upload size={18} />
-              <span>Upload PDF</span>
+              <Upload size={14} className="w-3 h-3 md:w-4 md:h-4" />{" "}
+              <span className="text-xs md:text-sm">Upload PDF</span>{" "}
             </>
           )}
         </button>
